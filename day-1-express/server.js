@@ -1,3 +1,15 @@
+// ════════════════════════════════════════════════════════════
+// dotenv/config must be the VERY FIRST import in the entire app.
+// It reads the .env file and injects its values into process.env
+// BEFORE any other code runs. If you import it late, anything that
+// reads process.env earlier in the file would get "undefined".
+// ════════════════════════════════════════════════════════════
+import 'dotenv/config';
+
+
+
+
+
 import express from 'express';
 import snackRoutes from './snackRoutes.js';
 import logger from './middleware/logger.js';
@@ -5,7 +17,11 @@ import snackTimer from './middleware/snackTimer.js';
 import maintenanceMode from './middleware/maintenanceMode.js';
 
 const app = express();
-const PORT = 3000;
+// process.env.PORT pulls the value from .env (PORT=4000).
+// process.env values are ALWAYS strings, even though .env shows "4000"
+// looking like a number. app.listen() doesn't care - it coerces it fine.
+const PORT = process.env.PORT;
+
 
 // ───────────────────────────────────────────────
 // ORDER MATTERS - top to bottom, exactly as registered.
@@ -31,7 +47,7 @@ app.use('/snacks', snackTimer);
 app.use('/snacks', snackRoutes);
 
 app.get('/', (req, res) => {
-  res.send('Welcome to the Snack Shop API');
+ res.send(`Welcome to ${process.env.SHOP_NAME} API`);
 });
 
 app.listen(PORT, () => {
