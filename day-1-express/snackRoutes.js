@@ -8,7 +8,6 @@ const snacks = ['chips', 'cookies', 'popcorn'];
 router.get('/', (req, res) => {
   res.json(snacks);
 });
-
 // GET /snacks/:id
 router.get('/:id', (req, res) => {
   const id = req.params.id;
@@ -18,7 +17,11 @@ router.get('/:id', (req, res) => {
     return res.status(404).json({ message: 'Snack not found' });
   }
 
-  res.json({ id, snack });
+  // req.requestStartTime was attached by snackTimer middleware earlier in the chain.
+  // This proves middleware can pass data forward through req.
+  const elapsed = Date.now() - req.requestStartTime;
+
+  res.json({ id, snack, processedInMs: elapsed });
 });
 
 // POST /snacks
